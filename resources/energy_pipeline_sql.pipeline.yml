@@ -1,0 +1,26 @@
+resources:
+  pipelines:
+    # SDP pipeline written in SQL → schema engie_retail_en_sql
+    energy_pipeline_sql:
+      name: Energy_Retail_SQL_${bundle.target}
+      # These values are readable from SQL code as ${name} (spark.conf).
+      configuration:
+        "customers_path": ${var.customers_path}
+        "consumption_path": ${var.consumption_path}
+        "billing_path": ${var.billing_path}
+        "tariffs_path": ${var.tariffs_path}
+        "interactions_path": ${var.interactions_path}
+      libraries:
+        - glob:
+            include: ../src/01-Energy_SDP_SQL/00-Data-Sources/**
+        - glob:
+            include: ../src/01-Energy_SDP_SQL/01-Silver/**
+        - glob:
+            include: ../src/01-Energy_SDP_SQL/02-Gold/**
+      catalog: ${var.catalog}
+      schema: ${var.schema_sql}
+      channel: CURRENT
+      development: ${var.dlt_development_mode}
+      photon: true
+      serverless: true
+      root_path: ../src/01-Energy_SDP_SQL

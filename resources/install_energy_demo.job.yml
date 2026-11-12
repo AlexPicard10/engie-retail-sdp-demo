@@ -1,0 +1,32 @@
+# Autonomous install job — one click to set the whole demo up from the workspace.
+# After the bundle is deployed (CLI, or the Git-folder Deployments panel), run this job:
+#   1) generate_data  — runs the setup notebook (schemas + landing Volume + the 5 raw files)
+#   2) run_pipeline    — triggers the SDP pipeline (bronze → silver → gold)
+# Both tasks are serverless. Catalog / schemas come from the bundle variables, so they always
+# match the pipeline. Re-running is safe: the setup notebook overwrites the identical raw files
+# (Auto Loader only ingests genuinely new files) and the pipeline update is incremental.
+resources:
+  jobs:
+    install_energy_demo:
+      name: Install_Energy_Retail_SQL_${bundle.target}
+      tasks:
+        # 1) Create schemas + the `landing` Volume and generate the 5 synthetic raw files.
+        - task_key: generate_data
+          notebook_task:
+            notebook_path: ../src/00-Utiles/00-Setup-And-Generate-Data.py
+            source: WORKSPACE
+            base_parameters:
+              catalog: ${var.catalog}
+              raw_schema: ${var.raw_schema}
+              schema_sql: ${var.schema_sql}
+              n_customers: "10000"
+              mode: load
+          # No compute block → serverless (the notebook %pip-installs polars/mimesis itself).
+
+        # 2) Run the SDP pipeline once the data has landed.
+        - task_key: run_pipeline
+          depends_on:
+            - task_key: generate_data
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.energy_pipeline_sql.id}
+            full_refresh: false

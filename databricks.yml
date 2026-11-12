@@ -1,0 +1,56 @@
+# Databricks Asset Bundle — ENGIE Retail Energy SDP demo (SQL only)
+# A deliberately simple Spark Declarative Pipelines (SDP / Lakeflow Declarative Pipelines) demo
+# on synthetic French retail-energy data. One SQL pipeline, medallion bronze → silver → gold:
+#
+#   5 raw smart-meter files (UC Volume) ─► Auto Loader ─► bronze ─► silver (Expectations)
+#   ─► gold (Materialized Views + one ai_classify call) ─► at-risk retention list
+#
+# No Visual Data Prep, no Genie Code, no ML. Governed by Unity Catalog, deployed by this bundle.
+# https://docs.databricks.com/dev-tools/bundles/index.html
+bundle:
+  name: engie_retail_sdponly_demo
+
+# Bundle sync already honours .gitignore (so data/ is excluded automatically).
+include:
+  - resources/*.yml
+  - resources/*/*.yml
+
+variables:
+  catalog:
+    default: "alp_demo_catalog"
+  # Shared raw-data schema: holds the `landing` Volume with the 5 raw files.
+  raw_schema:
+    default: "engie_retail_en"
+  # Pipeline output schema (bronze / silver / gold tables).
+  schema_sql:
+    default: "engie_retail_en_sql"
+  # One landing folder per source, under the single `landing` Volume. Auto Loader
+  # monitors each folder; these values are readable from SQL as ${name} (spark.conf).
+  customers_path:
+    default: "/Volumes/${var.catalog}/${var.raw_schema}/landing/customers"
+  consumption_path:
+    default: "/Volumes/${var.catalog}/${var.raw_schema}/landing/consumption"
+  billing_path:
+    default: "/Volumes/${var.catalog}/${var.raw_schema}/landing/billing"
+  tariffs_path:
+    default: "/Volumes/${var.catalog}/${var.raw_schema}/landing/tariffs"
+  interactions_path:
+    default: "/Volumes/${var.catalog}/${var.raw_schema}/landing/interactions"
+  dlt_development_mode:
+    default: true
+
+# The workspace host is NOT hard-coded: deployed from the UI (Git folder → Deployments panel),
+# the bundle targets the current workspace. Adapt `catalog` above to your workspace.
+targets:
+  # --- dev: iterative development ---
+  dev:
+    mode: development
+    default: true
+    variables:
+      dlt_development_mode: true
+
+  # --- prod: production deployment ---
+  prod:
+    mode: production
+    variables:
+      dlt_development_mode: false

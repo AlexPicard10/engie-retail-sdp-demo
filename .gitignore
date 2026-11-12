@@ -1,0 +1,17 @@
+.databricks/
+build/
+dist/
+__pycache__/
+*.egg-info
+.venv/
+scratch/**
+!scratch/README.md
+# Raw data is generated into a UC Volume by the setup notebook — never committed.
+data/
+# Local notes (not published)
+CLAUDE.md
+energy-venv/
+.isaac/
+.vscode/
+__builtins__.pyi
+typings/

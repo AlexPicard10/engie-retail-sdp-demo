@@ -1,0 +1,323 @@
+<title>Retail Energy 360 — SDP</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --bg:#f4f1ea; --surface:#ffffff; --surface-2:#faf8f3;
+    --ink:#20201c; --muted:#6d6a62; --line:#dcd7cc;
+    --accent:#0e7490; --accent-tint:#d7edf3;
+    --bronze:#9c6326; --bronze-tint:#f0e3d1;
+    --silver:#5e6572; --silver-tint:#e8eaee;
+    --gold:#a9791f; --gold-tint:#f4e9cb;
+    --ai:#b4461f; --ai-tint:#f8e2d8;
+    --shadow:0 1px 2px rgba(30,28,22,.06),0 6px 20px rgba(30,28,22,.06);
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#17160f; --surface:#211f19; --surface-2:#1b1a14;
+      --ink:#f2eee4; --muted:#a6a196; --line:#38352d;
+      --accent:#45c4e3; --accent-tint:#0c2f3a;
+      --bronze:#d8965a; --bronze-tint:#3a2a1a;
+      --silver:#aab0bb; --silver-tint:#2a2d33;
+      --gold:#e0b452; --gold-tint:#382d16;
+      --ai:#ee8c64; --ai-tint:#3a2016;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#17160f; --surface:#211f19; --surface-2:#1b1a14;
+    --ink:#f2eee4; --muted:#a6a196; --line:#38352d;
+    --accent:#45c4e3; --accent-tint:#0c2f3a;
+    --bronze:#d8965a; --bronze-tint:#3a2a1a;
+    --silver:#aab0bb; --silver-tint:#2a2d33;
+    --gold:#e0b452; --gold-tint:#382d16;
+    --ai:#ee8c64; --ai-tint:#3a2016;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;line-height:1.5}
+  .wrap{max-width:1240px;margin-inline:auto;padding-inline:20px;padding-block:44px 64px}
+
+  .eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);font-weight:500;margin:0 0 14px}
+  h1{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:700;
+    font-size:clamp(2rem,6vw,3.3rem);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
+  .lede{max-width:72ch;color:var(--muted);font-size:clamp(1rem,1.4vw,1.12rem);margin:16px 0 0}
+  .lede b{color:var(--ink);font-weight:600}
+
+  .diagram{margin:40px 0 12px;overflow-x:auto;border:1px solid var(--line);border-radius:16px;
+    background:var(--surface);box-shadow:var(--shadow);padding:8px}
+  .diagram-inner{min-width:980px}
+  figure{margin:0}
+  svg{display:block;width:100%;height:auto;color:var(--ink)}
+  figcaption{color:var(--muted);font-size:13px;padding:2px 12px 10px;text-align:center}
+
+  .box{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
+  .n-bronze{fill:var(--bronze-tint);stroke:var(--bronze);stroke-width:1.5}
+  .n-silver{fill:var(--silver-tint);stroke:var(--silver);stroke-width:1.5}
+  .n-goldwrap{fill:var(--gold-tint);stroke:var(--gold);stroke-width:1.5}
+  .n-flow{fill:var(--accent-tint);stroke:var(--accent);stroke-width:1.5}
+  .goldrow{fill:var(--surface);stroke:var(--gold);stroke-width:1}
+  .aichip{fill:var(--ai-tint);stroke:var(--ai);stroke-width:1.4}
+  .pipe{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:5 5}
+  .edge{fill:none;stroke:currentColor;stroke-width:2}
+  .edge-d{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-dasharray:4 4}
+  .t{font-family:"IBM Plex Sans",sans-serif;fill:var(--ink)}
+  .th{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;fill:var(--ink)}
+  .tm{font-family:"IBM Plex Mono",monospace;fill:var(--ink)}
+  .mut{fill:var(--muted)}
+  .lay{font-family:"IBM Plex Mono",monospace;font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+  .badge{fill:var(--surface);stroke:var(--ink);stroke-width:1.5}
+  .badge-t{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;fill:var(--ink);text-anchor:middle}
+
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:34px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 16px 18px;
+    box-shadow:var(--shadow);border-top:3px solid var(--c,var(--accent));display:flex;flex-direction:column;gap:6px}
+  .card.bronze{--c:var(--bronze)} .card.silver{--c:var(--silver)}
+  .card.gold{--c:var(--gold)} .card.flow{--c:var(--accent)} .card.ai{--c:var(--ai)}
+  .chead{display:flex;align-items:center;gap:10px}
+  .num{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+    background:var(--surface);border:1.5px solid var(--ink);
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:14px}
+  .tag{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+    font-weight:500;color:var(--c,var(--accent))}
+  .card h3{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:1.06rem;
+    margin:2px 0 0;letter-spacing:-.01em}
+  .card p{margin:0;color:var(--muted);font-size:.9rem}
+  .tbl{font-family:"IBM Plex Mono",monospace;font-size:.62rem;color:var(--ink);
+    background:var(--surface-2);border:1px solid var(--line);border-radius:7px;padding:5px 8px;
+    margin-top:auto;overflow-wrap:break-word;line-height:1.7}
+
+  .stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px;align-items:center}
+  .stack .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);margin-right:4px}
+  .pill{font-family:"IBM Plex Mono",monospace;font-size:12px;padding:5px 11px;border-radius:999px;
+    background:var(--accent-tint);color:var(--accent);white-space:nowrap}
+  .pill.ai{background:var(--ai-tint);color:var(--ai)}
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">Databricks demo · Spark Declarative Pipelines · SQL</p>
+  <h1>Retail Energy 360</h1>
+  <p class="lede">From 5 raw smart-meter files to a named retention list — a deliberately simple
+  declarative <b>bronze → silver → gold</b> pipeline in <b>SQL</b>. <b>Auto Loader</b> ingests,
+  <b>Expectations</b> clean, <b>Materialized Views</b> aggregate, and a single <b>ai_classify</b>
+  call labels each customer's latest message. No Visual Data Prep, no Genie Code, no ML — just the
+  pipeline. Synthetic French retail-energy data.</p>
+
+  <div class="diagram">
+   <div class="diagram-inner">
+    <figure>
+      <svg viewBox="0 0 1300 560" role="img"
+        aria-label="A SQL Spark Declarative Pipeline on schema engie_retail_en_sql. Five raw files (customers, consumption, billing, interactions, tariff plans) land in a Unity Catalog Volume, ingested by Auto Loader into four bronze streaming tables plus a tariff reference Materialized View. A silver layer cleans and types them with Expectations, flattening the nested-JSON interactions and joining the tariff reference. The gold layer builds a per-customer energy profile Materialized View with six features and a rule-based segment, a topics Materialized View using ai_classify, and an at-risk retention list, consumed under Unity Catalog governance.">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <!-- SDP container -->
+        <rect class="pipe" x="196" y="118" width="840" height="372" rx="14"/>
+        <text class="tm mut" x="212" y="142" font-size="13" font-weight="500">SDP pipeline · serverless · SQL</text>
+        <rect class="n-flow" x="872" y="126" width="152" height="24" rx="12"/>
+        <text class="tm" x="948" y="142" font-size="10.5" text-anchor="middle">SQL → engie_retail_en_sql</text>
+        <text class="tm mut" x="212" y="478" font-size="11.5">Every table: CLUSTER BY AUTO</text>
+
+        <!-- edges -->
+        <line class="edge" x1="178" y1="262" x2="206" y2="262" marker-end="url(#ah)"/>
+        <path class="edge" d="M314 250 C 334 240, 338 224, 350 220" marker-end="url(#ah)"/>
+        <path class="edge" d="M314 286 C 334 300, 338 334, 350 346" marker-end="url(#ah)"/>
+        <line class="edge" x1="530" y1="224" x2="562" y2="236" marker-end="url(#ah)"/>
+        <path class="edge-d" d="M530 352 C 548 352, 552 312, 562 300" marker-end="url(#ah)"/>
+        <line class="edge" x1="748" y1="262" x2="780" y2="286" marker-end="url(#ah)"/>
+        <line class="edge" x1="1016" y1="300" x2="1048" y2="296" marker-end="url(#ah)"/>
+
+        <!-- edge labels -->
+        <text class="tm mut" x="332" y="212" font-size="10">read_files</text>
+        <text class="tm mut" x="540" y="330" font-size="10">join</text>
+        <text class="tm mut" x="660" y="252" font-size="11" text-anchor="middle">Expect.</text>
+
+        <!-- Raw files -->
+        <rect class="box" x="20" y="150" width="158" height="250" rx="10"/>
+        <text class="th" x="34" y="176" font-size="13.5">5 raw files</text>
+        <text class="tm mut" x="34" y="202" font-size="10">raw_customers.csv</text>
+        <text class="tm mut" x="34" y="222" font-size="10">raw_consumption.csv</text>
+        <text class="tm mut" x="34" y="242" font-size="10">raw_billing.csv</text>
+        <text class="tm mut" x="34" y="262" font-size="10">raw_interactions.json</text>
+        <text class="tm mut" x="34" y="282" font-size="10">raw_tariff_plans.csv</text>
+        <line x1="34" y1="300" x2="164" y2="300" stroke="var(--line)" stroke-width="1"/>
+        <text class="t mut" x="34" y="322" font-size="10">UC Volume</text>
+        <text class="tm mut" x="34" y="338" font-size="9.5">landing/</text>
+        <text class="t mut" x="34" y="362" font-size="10">schema</text>
+        <text class="tm mut" x="34" y="378" font-size="9.5">engie_retail_en</text>
+
+        <!-- Auto Loader -->
+        <rect class="n-flow" x="210" y="216" width="104" height="92" rx="10"/>
+        <text class="th" x="262" y="250" font-size="13" text-anchor="middle">Auto Loader</text>
+        <text class="t mut" x="262" y="268" font-size="10" text-anchor="middle">STREAM</text>
+        <text class="t mut" x="262" y="282" font-size="10" text-anchor="middle">read_files</text>
+        <text class="t mut" x="262" y="298" font-size="10" text-anchor="middle">CSV · JSON</text>
+
+        <!-- Bronze -->
+        <rect class="n-bronze" x="352" y="150" width="178" height="152" rx="10"/>
+        <text class="lay" x="441" y="176" font-size="10" text-anchor="middle" fill="var(--bronze)">bronze</text>
+        <text class="tm" x="441" y="198" font-size="10" text-anchor="middle">bronze_customers</text>
+        <text class="tm" x="441" y="217" font-size="10" text-anchor="middle">bronze_consumption</text>
+        <text class="tm" x="441" y="236" font-size="10" text-anchor="middle">bronze_billing</text>
+        <text class="tm" x="441" y="255" font-size="10" text-anchor="middle">bronze_interactions</text>
+        <text class="t mut" x="441" y="282" font-size="10" text-anchor="middle">4 Streaming Tables</text>
+        <circle class="badge" cx="352" cy="150" r="13"/><text class="badge-t" x="352" y="155" font-size="14">1</text>
+
+        <!-- Reference MV -->
+        <rect class="n-flow" x="352" y="322" width="178" height="64" rx="10" style="stroke-dasharray:4 3"/>
+        <text class="tm" x="441" y="346" font-size="10.5" text-anchor="middle">ref_tariff_plans</text>
+        <text class="t mut" x="441" y="364" font-size="10" text-anchor="middle">Materialized View</text>
+        <text class="t mut" x="441" y="378" font-size="10" text-anchor="middle">is_flat_tariff</text>
+        <circle class="badge" cx="530" cy="322" r="12"/><text class="badge-t" x="530" y="326.5" font-size="13">2</text>
+
+        <!-- Silver -->
+        <rect class="n-silver" x="562" y="150" width="186" height="236" rx="10"/>
+        <text class="lay" x="655" y="176" font-size="10" text-anchor="middle" fill="var(--silver)">silver</text>
+        <text class="tm" x="655" y="200" font-size="10.5" text-anchor="middle">silver_customers</text>
+        <text class="tm" x="655" y="220" font-size="10.5" text-anchor="middle">silver_consumption</text>
+        <text class="tm" x="655" y="240" font-size="10.5" text-anchor="middle">silver_billing</text>
+        <text class="tm" x="655" y="260" font-size="10.5" text-anchor="middle">silver_interactions</text>
+        <line x1="582" y1="278" x2="728" y2="278" stroke="var(--line)" stroke-width="1"/>
+        <text class="t mut" x="655" y="298" font-size="10" text-anchor="middle">Expectations · typing</text>
+        <text class="t mut" x="655" y="314" font-size="10" text-anchor="middle">nested-JSON flatten</text>
+        <text class="t mut" x="655" y="330" font-size="10" text-anchor="middle">stream-static join</text>
+        <circle class="badge" cx="562" cy="150" r="13"/><text class="badge-t" x="562" y="155" font-size="14">3</text>
+        <circle class="badge" cx="748" cy="260" r="12"/><text class="badge-t" x="748" y="264.5" font-size="13">4</text>
+
+        <!-- Gold -->
+        <rect class="n-goldwrap" x="784" y="150" width="232" height="300" rx="12"/>
+        <text class="lay" x="900" y="176" font-size="11" text-anchor="middle" fill="var(--gold)">gold</text>
+
+        <rect class="goldrow" x="796" y="188" width="208" height="66" rx="8"/>
+        <text class="tm" x="824" y="212" font-size="10">gold_customer_energy_profile</text>
+        <text class="t mut" x="824" y="230" font-size="10">Materialized View</text>
+        <text class="t mut" x="824" y="244" font-size="10">6 features + segment</text>
+        <circle class="badge" cx="810" cy="208" r="11"/><text class="badge-t" x="810" y="212.5" font-size="12">5</text>
+
+        <rect class="aichip" x="796" y="266" width="208" height="66" rx="8"/>
+        <text class="tm" x="824" y="290" font-size="10">gold_customer_topics</text>
+        <text class="t mut" x="824" y="308" font-size="10">Materialized View</text>
+        <text class="t" x="824" y="322" font-size="10" fill="var(--ai)">ai_classify topic</text>
+        <circle class="badge" cx="810" cy="286" r="11"/><text class="badge-t" x="810" y="290.5" font-size="12">6</text>
+
+        <rect class="goldrow" x="796" y="344" width="208" height="66" rx="8"/>
+        <text class="tm" x="824" y="368" font-size="10">gold_at_risk_customers</text>
+        <text class="t mut" x="824" y="386" font-size="10">Materialized View</text>
+        <text class="t mut" x="824" y="400" font-size="10">retention list</text>
+        <circle class="badge" cx="810" cy="364" r="11"/><text class="badge-t" x="810" y="368.5" font-size="12">7</text>
+
+        <!-- internal gold edges into at-risk -->
+        <path class="edge" d="M900 254 C 900 258, 900 338, 900 342" marker-end="url(#ah)"/>
+        <path class="edge" d="M960 332 C 960 336, 940 340, 936 343" marker-end="url(#ah)"/>
+
+        <!-- Consumer -->
+        <rect class="box" x="1048" y="214" width="170" height="172" rx="12"/>
+        <text class="th" x="1133" y="248" font-size="14" text-anchor="middle">Consumption</text>
+        <text class="t" x="1133" y="276" font-size="12" text-anchor="middle">AI/BI dashboards</text>
+        <text class="t" x="1133" y="296" font-size="12" text-anchor="middle">Genie · Apps</text>
+        <text class="t" x="1133" y="316" font-size="12" text-anchor="middle">Notebooks</text>
+        <line x1="1068" y1="334" x2="1198" y2="334" stroke="var(--line)" stroke-width="1"/>
+        <text class="t mut" x="1133" y="354" font-size="11" text-anchor="middle">governed by</text>
+        <text class="th" x="1133" y="372" font-size="12.5" text-anchor="middle" fill="var(--accent)">Unity Catalog</text>
+        <circle class="badge" cx="1133" cy="214" r="13"/><text class="badge-t" x="1133" y="219" font-size="14">8</text>
+      </svg>
+      <figcaption>A single SQL pipeline (schema <code>engie_retail_en_sql</code>): Auto Loader →
+      bronze → silver (Expectations, nested-JSON flatten) → gold (Materialized Views + one
+      <code>ai_classify</code> call) → the at-risk retention list, governed by Unity Catalog.</figcaption>
+    </figure>
+   </div>
+  </div>
+
+  <div class="steps">
+    <article class="card bronze">
+      <div class="chead"><span class="num">1</span><span class="tag">Bronze · Auto Loader</span></div>
+      <h3>Streaming ingestion</h3>
+      <p>Four <b>Streaming Tables</b> ingest the raw CSV and nested-JSON files from the Volume with
+      <code>STREAM read_files</code>. Auto Loader tracks files incrementally — a re-run only reads
+      what's new.</p>
+      <div class="tbl">bronze_customers · bronze_consumption<br>bronze_billing · bronze_interactions</div>
+    </article>
+
+    <article class="card flow">
+      <div class="chead"><span class="num">2</span><span class="tag">Bronze · Reference MV</span></div>
+      <h3>Tariff reference</h3>
+      <p>The 11 tariff plans are static reference data, so they load as a <b>Materialized View</b>
+      (batch <code>read_files</code>) that also derives <code>is_flat_tariff</code> — the crux of
+      the retention story.</p>
+      <div class="tbl">ref_tariff_plans</div>
+    </article>
+
+    <article class="card silver">
+      <div class="chead"><span class="num">3</span><span class="tag">Silver · Expectations</span></div>
+      <h3>Clean, typed, enriched</h3>
+      <p>Typing + <b>Expectations</b> (drop / fail / warn) on customers, consumption and billing.
+      A <b>stream-static join</b> attaches the tariff plan and <code>is_flat_tariff</code> to each
+      customer.</p>
+      <div class="tbl">silver_customers · silver_consumption · silver_billing</div>
+    </article>
+
+    <article class="card silver">
+      <div class="chead"><span class="num">4</span><span class="tag">Silver · Nested JSON</span></div>
+      <h3>Flatten the interactions</h3>
+      <p>The interaction JSON lands as <code>struct</code> columns; dot notation
+      (<code>interaction.category</code>, <code>sentiment.score</code>) flattens them into clean
+      typed columns — no UDFs.</p>
+      <div class="tbl">silver_interactions</div>
+    </article>
+
+    <article class="card gold">
+      <div class="chead"><span class="num">5</span><span class="tag">Gold · Materialized View</span></div>
+      <h3>Customer energy profile</h3>
+      <p>One row per customer: six features (<code>avg_daily_kwh</code>,
+      <code>peak_consumption_pct</code>, <code>seasonal_ratio</code> …) plus a rule-based
+      <code>consumption_segment</code>.</p>
+      <div class="tbl">gold_customer_energy_profile</div>
+    </article>
+
+    <article class="card ai">
+      <div class="chead"><span class="num">6</span><span class="tag">Gold · ai_classify</span></div>
+      <h3>Interaction topic</h3>
+      <p>A single <b><code>ai_classify</code></b> call labels the ~80 distinct messages, fanned back
+      to each customer's latest contact — ~350× fewer LLM calls than classifying every row.</p>
+      <div class="tbl">gold_customer_topics</div>
+    </article>
+
+    <article class="card gold">
+      <div class="chead"><span class="num">7</span><span class="tag">Gold · Retention list</span></div>
+      <h3>At-risk customers</h3>
+      <p><b>Peak Heavy</b> + <b>flat tariff</b> + <b>billing dispute</b>, ranked by estimated annual
+      revenue at risk. The call list the whole pipeline exists to produce.</p>
+      <div class="tbl">gold_at_risk_customers</div>
+    </article>
+
+    <article class="card flow">
+      <div class="chead"><span class="num">8</span><span class="tag">Unity Catalog</span></div>
+      <h3>Governed consumption</h3>
+      <p>AI/BI dashboards, Genie, apps or notebooks read the gold tables: access, lineage and audit
+      <b>governed by Unity Catalog</b>.</p>
+      <div class="tbl">Dashboard · Genie · App · Notebook</div>
+    </article>
+  </div>
+
+  <div class="stack">
+    <span class="lbl">Features</span>
+    <span class="pill">SQL</span>
+    <span class="pill">Auto Loader</span>
+    <span class="pill">Expectations</span>
+    <span class="pill">Nested JSON</span>
+    <span class="pill">Stream-static join</span>
+    <span class="pill ai">ai_classify</span>
+    <span class="pill">Materialized View</span>
+    <span class="pill">CLUSTER BY AUTO</span>
+    <span class="pill">Unity Catalog</span>
+  </div>
+</div>
