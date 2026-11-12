@@ -36,8 +36,6 @@ variables:
     default: "/Volumes/${var.catalog}/${var.raw_schema}/landing/tariffs"
   interactions_path:
     default: "/Volumes/${var.catalog}/${var.raw_schema}/landing/interactions"
-  dlt_development_mode:
-    default: true
 
 # The workspace host is NOT hard-coded: deployed from the UI (Git folder → Deployments panel),
 # the bundle targets the current workspace. Adapt `catalog` above to your workspace.
@@ -46,11 +44,7 @@ targets:
   dev:
     mode: development
     default: true
-    variables:
-      dlt_development_mode: true
 
   # --- prod: production deployment ---
   prod:
     mode: production
-    variables:
-      dlt_development_mode: false

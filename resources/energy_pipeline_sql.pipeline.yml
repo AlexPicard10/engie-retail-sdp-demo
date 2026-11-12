@@ -20,7 +20,6 @@ resources:
       catalog: ${var.catalog}
       schema: ${var.schema_sql}
       channel: CURRENT
-      development: ${var.dlt_development_mode}
       photon: true
       serverless: true
       root_path: ../src/01-Energy_SDP_SQL
